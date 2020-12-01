@@ -112,7 +112,7 @@ class edfConvert:
         
             print('\n-> Converting channel: '+ save_name)
             
-            # decimate
+            # get data from edf read object and decimate
             data = signal.decimate(f.readSignal(ch_num), self.down_factor)
             
             # reshape
@@ -123,6 +123,61 @@ class edfConvert:
             
         # delete file read
         del f
+        
+        return 1
+    
+    
+    def edf_to_h5(self, main_path, file_name):
+        """
+        
+        Parameters
+        ----------
+        main_path : Str, path to file's parent directory
+        file_name : Str, file name
+
+        Returns
+        -------
+        Bool, 1 if the convertion operation is successful 
+
+        """
+        
+        # read edf
+        f = pyedflib.EdfReader(os.path.join(main_path, file_name))
+        
+        # get rows and chanels
+        rows = int(f.getNSamples()[0]/self.down_factor/self.winsize)
+        channels = len(f.getSignalHeaders())
+        
+        # open tables object for saving
+        fsave = tables.open_file(os.path.join(main_path, file_name + '.h5'), mode='w') 
+        atom = tables.Float64Atom() # declare data type     
+        ds = fsave.create_earray(fsave.root, 'data', atom, # create data store 
+                                    shape = [rows, self.winsize, 0])
+        
+        for i in range(channels): # iterate over channels
+            
+            # get channel number
+            ch_num = i 
+            
+            # get save name
+            save_name = file_name.replace('.edf','-ch_'+str(ch_num+1)) 
+        
+            print('\n-> Converting channel: '+ save_name)
+            
+            # decimate
+            data = signal.decimate(f.readSignal(ch_num), self.down_factor)
+            
+            # reshape
+            data = np.reshape(data, (-1, self.winsize,1))
+            
+            # save to h5
+            ds.append(data)
+        
+        # close tables save object
+        fsave.close()
+        
+        # delete file read, 
+        del f 
         
         return 1
         
@@ -195,9 +250,9 @@ if __name__ == '__main__':
         
     
     # Verify whether to proceed
-    answer = input('Would you like to proceed with File Conversion (y/n)? \n')
+    answer = input('Would you like to proceed with File Conversion (csv/h5/no)? \n')
     
-    if answer == 'y':
+    if answer == 'csv':
         
         print('\n---------------------------------------------------------------------')
         print('------------------------ Initiating Conversion ----------------------\n')
@@ -206,7 +261,16 @@ if __name__ == '__main__':
         
         print('\n************************* Conversion Completed *************************\n')
         
-    elif answer == 'n':
+    elif answer == 'h5':
+        
+        print('\n---------------------------------------------------------------------')
+        print('------------------------ Initiating Conversion ----------------------\n')
+        
+        obj.all_files(main_path, obj.edf_to_h5)
+        
+        print('\n************************* Conversion Completed *************************\n')
+        
+    elif answer == 'no':
         
        print('---> No Further Action Will Be Performed.\n')
        
