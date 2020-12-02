@@ -3,8 +3,22 @@ Conversion of **edf** files to **csv** or **h5** format
 
 ---
 ## How it works
-An **edf** file is converted to **csv** files (one per channel) or one 3D h5 file.
+An **edf** file is converted to 2D **csv** files (one per channel) or one 3D h5 file.
 
+For **csv**:
+
+    columns = win * new_fs
+    rows = L/columns
+        
+For **h5**:
+
+    1D = L/columns
+    2D = win * new_fs
+    3D = number of channels
+    
+Where *L = length* in samples of one channel in the **edf**  file
+for *win* and *new_fs* check [Configuration settings](#configuration-settings).
+        
 ---
 ## How to use
     python edf_convert.py
