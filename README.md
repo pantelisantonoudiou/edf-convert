@@ -17,7 +17,7 @@ For **h5**:
     3D = number of channels
     
 Where *L = length* in samples of one channel in the **edf**  file
-for *win* and *new_fs* check [Configuration settings](#configuration-settings).
+for *win* and *new_fs* check the [configuration settings](#configuration-settings).
         
 ---
 ## How to use
