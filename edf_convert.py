@@ -7,7 +7,7 @@ Created on Mon Nov 30 17:33:18 2020
 
 
 ### --------------- IMPORTS --------------- ###
-import os, sys
+import os, sys, json
 import tables
 import pyedflib
 import numpy as np
@@ -215,25 +215,17 @@ class edfConvert:
     
     
 if __name__ == '__main__':
-    
-    # settings
-    prop_dict = {
-                'fs' : 2000,                                     # sampling rate
-                'new_fs' : 100,                                  # sampling rate after decimation
-                'win' : 5,                                       # window in seconds
-                }
         
     # get paths
     main_path = r'C:\Users\Pante\Desktop\edf_test'
-    # file_name = '218a_525_0200_0600.edf'
+    
+    # load properties from configuration file
+    openpath = open('config.json' , 'r').read(); 
+    prop_dict = json.loads(openpath)
     
     # init object
     obj = edfConvert(prop_dict)
-    
-    # # convert files to csv (one file)
-    # obj.edf_to_csv(main_path, file_name)
-    
-    
+
     print('\n---------------------------------------------------------------------')
     print('------------------------ Initiate Error Check -----------------------\n')
     
@@ -280,14 +272,3 @@ if __name__ == '__main__':
     
     
     
-    
-    
-    
-    
-    
-    
-    
-
-
-    
-
