@@ -1,5 +1,9 @@
 # edf-convert
-Conversion of edf files to csv or h5 format
+Conversion of **edf** files to **csv** or **h5** format
+
+---
+## How it works
+An **edf** file is converted to **csv** files (one per channel) or one 3D h5 file.
 
 ---
 ## How to use
