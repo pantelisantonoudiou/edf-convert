@@ -1,5 +1,5 @@
 # edf-convert
-Conversion of **edf** files to **csv** or **h5** format
+Conversion of **edf** files to **csv** or **h5** format.
 
 ---
 ## How it works
@@ -8,21 +8,28 @@ An **edf** file is converted to 2D **csv** files (one per channel) or one 3D **h
 For **csv**:
 
     columns = win * new_fs
-    rows = L/columns
+    rows = nSamples/columns
         
 For **h5**:
 
-    1D = L/columns
+    1D = nSamples/columns
     2D = win * new_fs
     3D = number of channels
     
-Where *L = length* in samples of one channel in the **edf**  file
-for *win* and *new_fs* check the [configuration settings](#configuration-settings).
+- Where *'nSamples'* is the number of samples in one channel of the **edf** file.
+
+- The signals are scaled according to the *'scale'* factor.
+
+- For *'scale'* factor, *'win'* and *'new_fs'* check the [configuration settings](#configuration-settings).
+
         
 ---
 ## How to use
+Simply execute:
     python edf_convert.py
     
+and follow script instructions after execute 
+
 ---
 ### :snake: Dependencies
 
