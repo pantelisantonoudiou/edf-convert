@@ -112,8 +112,8 @@ class edfConvert:
         
             print('\n-> Converting channel: '+ save_name)
             
-            # get data from edf read object and decimate
-            data = signal.decimate(f.readSignal(ch_num), self.down_factor)
+            # decimate and scale
+            data = signal.decimate(f.readSignal(ch_num) *self.scale, self.down_factor)
             
             # reshape
             data = np.reshape(data, (-1, self.winsize))
@@ -164,8 +164,8 @@ class edfConvert:
         
             print('\n-> Converting channel: '+ save_name)
             
-            # decimate
-            data = signal.decimate(f.readSignal(ch_num), self.down_factor)
+            # decimate and scale
+            data = signal.decimate(f.readSignal(ch_num), self.down_factor) * self.scale
             
             # reshape
             data = np.reshape(data, (-1, self.winsize,1))
