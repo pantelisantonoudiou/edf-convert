@@ -222,10 +222,10 @@ if __name__ == '__main__':
     prop_dict = json.loads(openpath)
         
     # get paths
-    main_path = input('Please enter path to folder containing edf files: \n')
+    main_path = input('Please enter path of folder containing edf files: \n')
     
     if os.path.isdir(main_path) == 0:
-        print('-> Path:', main_path, 'is not valid.\n Please enter a valid path.')
+        print('-> Path:', "'"+main_path+"'", 'is not valid.\n Please enter a valid path.')
         sys.exit()
     
     # init object
@@ -240,37 +240,43 @@ if __name__ == '__main__':
     print('---------------------------------------------------------------------\n')
     
     if np.all(success) == True:
-        print('-> File Check Completed Successfully')
-        
+        print('-> File Check Completed Successfully')  
     else:
         print('-> Warning!!! File Check was not Successful.')
         
+    # create user options list
+    options =['csv','h5','no']
+    answer = ''
     
-    # Verify whether to proceed
-    answer = input('Would you like to proceed with File Conversion (csv/h5/no)? \n')
-    
-    if answer == 'csv':
+    # Verify how to proceed
+    while answer not in options:
+        answer = input('Would you like to proceed with File Conversion ' + str(options) + ' ? \n')
         
-        print('\n---------------------------------------------------------------------')
-        print('------------------------ Initiating Conversion ----------------------\n')
-    
+    if answer == 'no':
+        
+       print('---> No Further Action Will Be Performed.\n')
+       sys.exit()
+
+    elif answer == 'csv':
+        
+        print('\n--------------------------------------------------------------------------------')
+        print('------------------------ Initiating edf -> csv Conversion ----------------------\n')
+        
         obj.all_files(main_path, obj.edf_to_csv)
         
         print('\n************************* Conversion Completed *************************\n')
         
     elif answer == 'h5':
         
-        print('\n---------------------------------------------------------------------')
-        print('------------------------ Initiating Conversion ----------------------\n')
+        print('\n-------------------------------------------------------------------------------')
+        print('------------------------ Initiating edf -> h5 Conversion ----------------------\n')
         
         obj.all_files(main_path, obj.edf_to_h5)
         
         print('\n************************* Conversion Completed *************************\n')
-        
-    elif answer == 'no':
-        
-       print('---> No Further Action Will Be Performed.\n')
-       
+            
+
+           
        
        
     
