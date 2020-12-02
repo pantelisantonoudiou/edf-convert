@@ -15,8 +15,9 @@ from scipy import signal
 from tqdm import tqdm
 ### --------------------------------------- ###
 
+
 class edfConvert:
-    """ Class for conversion of .edf files to .csv
+    """ Class for conversion of .edf files to .csv or .h5
     """
     
     def __init__(self, prop_dict):
@@ -193,14 +194,14 @@ class edfConvert:
 
         Returns
         -------
-        bool_array : ndarray bool, True for each successful operation
-
+        bool_array : ndarray, 1/0 for successful and not successful operations respectively
 
         """
         
         # get file list
         filelist = list(filter(lambda k: '.edf' in k, os.listdir(main_path)))
         
+        # create empty array to store 1/0
         bool_array = np.zeros(len(filelist))
         
         # convert all files
@@ -215,13 +216,17 @@ class edfConvert:
     
     
 if __name__ == '__main__':
-        
-    # get paths
-    main_path = r'C:\Users\Pante\Desktop\edf_test'
     
     # load properties from configuration file
     openpath = open('config.json' , 'r').read(); 
     prop_dict = json.loads(openpath)
+        
+    # get paths
+    main_path = input('Please enter path to folder containing edf files: \n')
+    
+    if os.path.isdir(main_path) == 0:
+        print('-> Path:', main_path, 'is not valid.\n Please enter a valid path.')
+        sys.exit()
     
     # init object
     obj = edfConvert(prop_dict)
