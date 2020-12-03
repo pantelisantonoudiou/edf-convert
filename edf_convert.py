@@ -17,7 +17,7 @@ from tqdm import tqdm
 
 
 class edfConvert:
-    """ Class for conversion of .edf files to .csv or .h5
+    """ Class for conversion of .edf files to .csv or .h5 format.
     """
     
     def __init__(self, prop_dict):
@@ -25,7 +25,7 @@ class edfConvert:
 
         Parameters
         ----------
-        prop_dict : dict with properties
+        prop_dict : Dict, with properties from config.json file
 
         Returns
         -------
@@ -84,7 +84,6 @@ class edfConvert:
             
             return 0
             
-   
 
     def edf_to_csv(self, main_path, file_name):
         """
