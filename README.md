@@ -6,22 +6,21 @@ Conversion of **edf** files to **csv** or **h5** format.
 An **edf** file is converted to 2D **csv** files (one per channel) or one 3D **h5** file.
 
 For **csv**:
-
-    columns = win * new_fs
+    
     rows = nSamples/columns
+    columns = win * new_fs
         
 For **h5**:
 
-    1D = nSamples/columns
-    2D = win * new_fs
-    3D = number of channels
+    1st-dimension, X = nSamples/Y
+    2nd-dimension, Y = win * new_fs
+    3rd-dimension, Z = number of channels
     
 - Where *'nSamples'* is the number of samples in one channel of the **edf** file.
 
-- The signals are scaled according to the *'scale'* factor.
+- The signals are also scaled according to the *'scale'* factor.
 
-- For *'scale'* factor, *'win'* and *'new_fs'* check the [configuration settings](#configuration-settings).
-
+- For *'scale'*, *'win'* and *'new_fs'* check the [configuration settings](#configuration-settings).
         
 ---
 ## How to use
