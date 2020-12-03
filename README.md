@@ -1,11 +1,11 @@
-# edf-convert
+# :page_facing_up: edf-convert
 Conversion of **edf** files to **csv** or **h5** format.
 
 ---
 ## How it works
 An **edf** file is converted to 2D **csv** files (one per channel) or one 3D **h5** file.
 
-For **csv**:
+For **csv** [example](imgs/data-format.png):
     
     rows = nSamples/columns
     columns = win * new_fs
