@@ -5,10 +5,14 @@ Conversion of **edf** files to **csv** or **h5** format.
 ## How it works
 An **edf** file is converted to 2D **csv** files (one per channel) or one 3D **h5** file.
 
-For **csv** [example](imgs/data-format.png):
-    
+For **csv** : 
+
     rows = nSamples/columns
     columns = win * new_fs
+    
+**Example:**
+
+<img src="imgs/data-format.png" width="500">
         
 For **h5**:
 
