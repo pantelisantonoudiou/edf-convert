@@ -28,10 +28,9 @@ For **h5**:
         
 ---
 ## How to use
-Simply execute:
+Simply execute and follow script instructions
+
     python edf_convert.py
-    
-and follow script instructions after execute 
 
 ---
 ### :snake: Dependencies
