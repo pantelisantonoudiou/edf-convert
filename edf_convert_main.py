@@ -33,7 +33,7 @@ class edfConvert:
 
         """
         
-        # get values
+        # get values from dictionary
         for key, value in prop_dict.items():
                setattr(self, key, value)
                 
@@ -51,7 +51,7 @@ class edfConvert:
 
         Returns
         -------
-        Bool, 1 if the reading operation is successful 
+        Bool, 1/0 if the reading operation is successful/unsuccessful
 
         """
         
@@ -95,7 +95,7 @@ class edfConvert:
 
         Returns
         -------
-        Bool, 1 if the convertion operation is successful 
+        Bool, 1/0 if the reading operation is successful/unsuccessful
 
         """
         
@@ -193,7 +193,7 @@ class edfConvert:
 
         Returns
         -------
-        bool_array : ndarray, 1/0 for successful and not successful operations respectively
+        bool_array : ndarray, 1/0 for successful/unsuccessful operations
 
         """
         
