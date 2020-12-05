@@ -152,13 +152,10 @@ def test_data_scaling(edf_dir_path, edf_obj, decimated_data, chnl):
     # get data frame
     df = pd.read_csv(os.path.join(edf_dir_path, filelist[chnl]), header=None)
     
-    # get sum of data from csv file for n rows
+    # get sum of data from csv file
     csv_data = df.to_numpy().flatten()
-    
-    # get equivalent data sum for length of n rows x column size
-    dec_data = decimated_data
-    
-    assert np.sum(dec_data) == (np.sum(csv_data) * edf_obj.scale)
+
+    assert np.sum(decimated_data) == (np.sum(csv_data) * edf_obj.scale)
     
 
 ### ------------------------------------------------------ ###

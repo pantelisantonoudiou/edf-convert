@@ -222,7 +222,7 @@ if __name__ == '__main__':
     main_path = input('Please enter path of folder containing edf files: \n')
     
     if os.path.isdir(main_path) == 0:
-        print('-> Path:', "'"+main_path+"'", 'is not valid.\n Please enter a valid path.')
+        print('-> Path:', "'" + main_path + "'", 'is not valid.\n Please enter a valid path.')
         sys.exit()
     
     # init object
