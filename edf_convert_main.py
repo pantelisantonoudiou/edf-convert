@@ -149,7 +149,7 @@ class edfConvert:
         channels = len(f.getSignalHeaders())
         
         # open tables object for saving
-        fsave = tables.open_file(os.path.join(main_path, file_name + '.h5'), mode='w') 
+        fsave = tables.open_file(os.path.join(main_path, file_name.replace('.edf','.h5')), mode='w') 
         atom = tables.Float64Atom() # declare data type     
         ds = fsave.create_earray(fsave.root, 'data', atom, # create data store 
                                     shape = [rows, self.winsize, 0])
@@ -211,8 +211,6 @@ class edfConvert:
             
         return bool_array
                 
-            
-    
     
 if __name__ == '__main__':
     
