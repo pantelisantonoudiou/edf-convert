@@ -51,7 +51,7 @@ class edfConvert:
 
         Returns
         -------
-        Bool, 1/0 if the reading operation is successful/unsuccessful
+        Bool, False/True if the reading operation is successful/unsuccessful
 
         """
         
@@ -75,14 +75,14 @@ class edfConvert:
             # delete read object
             del f
             
-            return 1
+            return False
         
         except Exception as err:
             
             print('\n -> Error! File:', file_name, 'could not be read.\n')
             print(err,'\n')
             
-            return 0
+            return True
             
 
     def edf_to_csv(self, main_path, file_name):
@@ -95,7 +95,7 @@ class edfConvert:
 
         Returns
         -------
-        Bool, 1/0 if the reading operation is successful/unsuccessful
+        Bool, False/True if the reading operation is successful/unsuccessful
 
         """
         
@@ -124,7 +124,7 @@ class edfConvert:
         # delete file read
         del f
         
-        return 1
+        return False
     
     
     def edf_to_h5(self, main_path, file_name):
@@ -137,7 +137,7 @@ class edfConvert:
 
         Returns
         -------
-        Bool, 1 if the convertion operation is successful 
+        Bool, False/True if the reading operation is successful/unsuccessful
 
         """
         
@@ -179,7 +179,7 @@ class edfConvert:
         # delete file read, 
         del f 
         
-        return 1
+        return False
         
         
                 
@@ -193,15 +193,15 @@ class edfConvert:
 
         Returns
         -------
-        bool_array : ndarray, 1/0 for successful/unsuccessful operations
+        bool_array : ndarray, False/True for successful/unsuccessful operations
 
         """
         
         # get file list
         filelist = list(filter(lambda k: '.edf' in k, os.listdir(main_path)))
         
-        # create empty array to store 1/0
-        bool_array = np.zeros(len(filelist))
+        # create empty array to store True/False
+        bool_array = np.zeros(len(filelist), dtype = bool)
         
         # convert all files
         for i in tqdm(range(len(filelist)), desc = 'Progress', file=sys.stdout):
@@ -236,7 +236,7 @@ if __name__ == '__main__':
     print('\n------------------------ Error Check Finished -----------------------')
     print('---------------------------------------------------------------------\n')
     
-    if np.all(success) == True:
+    if np.any(success) == False:
         print('-> File Check Completed Successfully')  
     else:
         print('-> Warning!!! File Check was not Successful.')
