@@ -16,7 +16,7 @@ from tqdm import tqdm
 ### --------------------------------------- ###
 
 
-class edfConvert:
+class EdfConvert:
     """ Class for conversion of .edf files to .csv or .h5 format.
     """
     
@@ -41,8 +41,31 @@ class edfConvert:
         self.winsize = int(self.new_fs*self.win)                      # window size in samples
         
         
+    def _read_edf(self, main_path, file_name):
+        """
+        Opens edf file using pyedflib and returns a reference object.
+
+
+        Parameters
+        ----------
+        main_path : Str, path to file's parent directory
+        file_name : Str, file name
+
+        Returns
+        -------
+        fread : pyedflib obj
+
+        """
+        
+        fread = pyedflib.EdfReader(os.path.join(main_path, file_name))
+        
+        return fread
+        
+        
     def edf_check(self, main_path, file_name):
         """
+        Checks if an edf file can be read successfully.
+        
         
         Parameters
         ----------
@@ -59,8 +82,8 @@ class edfConvert:
         read_length = 1000 
         
         try: 
-            # open reader
-            f = pyedflib.EdfReader(os.path.join(main_path, file_name))
+            # open edf reader
+            f = self._read_edf(main_path, file_name)
             
             for i in range(len(f.getSignalHeaders())): # iterate over channels
             
@@ -87,6 +110,13 @@ class edfConvert:
 
     def edf_to_csv(self, main_path, file_name):
         """
+        Convert an edf file to csv file(s), csv file per channel.
+        
+        csv file shape
+        -------------------
+        rows = nSamples/columns
+        columns = win * new_fs
+        Where 'nSamples' is the number of samples in one channel of the edf file.
         
         Parameters
         ----------
@@ -99,8 +129,8 @@ class edfConvert:
 
         """
         
-        # read edf
-        f = pyedflib.EdfReader(os.path.join(main_path, file_name))
+        # open edf reader
+        f = self._read_edf(main_path, file_name)
         
         for i in range(len(f.getSignalHeaders())): # iterate over channels
             
@@ -129,6 +159,14 @@ class edfConvert:
     
     def edf_to_h5(self, main_path, file_name):
         """
+        Convert an edf file to h5 file.
+        
+        h5 file shape
+        -------------------
+        1st-dimension, X = nSamples/Y
+        2nd-dimension, Y = win * new_fs
+        3rd-dimension, Z = number of channels
+        Where 'nSamples' is the number of samples in one channel of the edf file.
         
         Parameters
         ----------
@@ -141,8 +179,8 @@ class edfConvert:
 
         """
         
-        # read edf
-        f = pyedflib.EdfReader(os.path.join(main_path, file_name))
+        # open edf reader
+        f = self._read_edf(main_path, file_name)
         
         # get rows and chanels
         rows = int(f.getNSamples()[0]/self.down_factor/self.winsize)
@@ -226,7 +264,7 @@ if __name__ == '__main__':
         sys.exit()
     
     # init object
-    obj = edfConvert(prop_dict)
+    obj = EdfConvert(prop_dict)
 
     print('\n---------------------------------------------------------------------')
     print('------------------------ Initiate Error Check -----------------------\n')
