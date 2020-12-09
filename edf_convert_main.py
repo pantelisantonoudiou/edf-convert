@@ -142,7 +142,7 @@ class EdfConvert:
     
     def edf_to_h5(self, file_name):
         """
-        Convert edf to h5 file.
+        Convert an edf to h5 file.
         
         h5 file shape:
         1st-dimension, X = nSamples/Y
@@ -198,16 +198,14 @@ class EdfConvert:
         # delete file read, 
         del f 
         
-        
                 
     def all_files(self, func):
         """
-        Run func opeartion on all edf files in self.main_path.
+        Run func operation on all edf files in parent edf directory.
         ----------------------------------------------------------------------
 
         Parameters
         ----------
-        main_path : Str, path to parent directory
         func : Function or method for manipulation of one edf file
 
         Returns
@@ -266,20 +264,26 @@ if __name__ == '__main__':
     print('---------------------------------------------------------------------\n')
     
     if success == False:
-        print('-> File Check Completed Successfully')  
+        print('-> File Check Completed Successfully.\n')  
     else:
         print('--> Warning!!! File Check was not Successful.\n')
         sys.exit()
         
     # create user options list
-    options =['csv','h5']
+    options =['csv','h5', 'exit']
     answer = ''
     
     # Verify how to proceed
     while answer not in options:
         answer = input('Would you like to proceed with File Conversion ' + str(options) + ' ? \n')
+        print('\n---> Input error: Please choose one of the following options:', str(options) +'.', 
+              'This was received instead:', str(answer)+'\n')
         
-    if answer == 'csv':
+    if answer == 'exit':
+        
+         print('\n---> No Further Action Will Be Performed.\n')
+        
+    elif answer == 'csv':
         
         print('\n--------------------------------------------------------------------------------')
         print('------------------------ Initiating edf -> csv Conversion ----------------------\n')
@@ -296,6 +300,8 @@ if __name__ == '__main__':
         obj.all_files(obj.edf_to_h5)
         
         print('\n************************* Conversion Completed *************************\n')
+
+        
             
 
            
