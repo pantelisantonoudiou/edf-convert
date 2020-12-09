@@ -61,49 +61,38 @@ class EdfConvert:
         return fread
         
         
-    def edf_check(self, file_name):
+    def edf_check(self, file_name, read_length = 1000):
         """
-        Checks if an edf file can be read successfully.
+        Read small parts of an edf file. Read samples from 
+        start, mid and end across all channels of the edf file.
         ----------------------------------------------------------------------
         
         Parameters
         ----------
         file_name : Str, file name
+        read_length: Int, Number of samples to be read for each segment
+                     Optional, Default = 1000
 
         Returns
         -------
-        Bool, False/True if the reading operation is successful/unsuccessful
 
         """
         
-        # get reading length for testing        
-        read_length = 1000 
+        # open edf reader
+        f = self._read_edf(file_name)
         
-        try: 
-            # open edf reader
-            f = self._read_edf(file_name)
+        for i in range(len(f.getSignalHeaders())): # iterate over channels
+        
+            # get signal length
+            signal_length = f.getNSamples()[i]
             
-            for i in range(len(f.getSignalHeaders())): # iterate over channels
-            
-                # get signal length
-                signal_length = f.getNSamples()[i]
-                
-                # read signal samples
-                f.readSignal(chn = i, start = 0, n = read_length)                                        # start
-                f.readSignal(chn = i, start = int(signal_length/2), n = read_length)                     # mid
-                f.readSignal(chn = i, start = int(signal_length - read_length - 1) , n = read_length)    # end
+            # read signal samples
+            f.readSignal(chn = i, start = 0, n = read_length)                                        # start
+            f.readSignal(chn = i, start = int(signal_length/2), n = read_length)                     # mid
+            f.readSignal(chn = i, start = int(signal_length - read_length - 1) , n = read_length)    # end
 
-            # delete read object
-            del f
-            
-            return False
-        
-        except Exception as err:
-            
-            print('\n -> Error! File:', file_name, 'could not be read.\n')
-            print(err,'\n')
-            
-            return True
+        # delete read object
+        del f
             
 
     def edf_to_csv(self, file_name):
@@ -122,7 +111,6 @@ class EdfConvert:
 
         Returns
         -------
-        Bool, False/True if the reading operation is successful/unsuccessful
 
         """
         
@@ -150,8 +138,6 @@ class EdfConvert:
             
         # delete file read
         del f
-        
-        return False
     
     
     def edf_to_h5(self, file_name):
@@ -171,7 +157,6 @@ class EdfConvert:
 
         Returns
         -------
-        Bool, False/True if the reading operation is successful/unsuccessful
 
         """
         
@@ -213,8 +198,6 @@ class EdfConvert:
         # delete file read, 
         del f 
         
-        return False
-        
         
                 
     def all_files(self, func):
@@ -229,23 +212,30 @@ class EdfConvert:
 
         Returns
         -------
-        bool_array : ndarray, False/True for successful/unsuccessful operations
+        bool : False/True for successful/unsuccessful operation
 
         """
         
-        # get file list
-        filelist = list(filter(lambda k: '.edf' in k, os.listdir(self.main_path)))
-        
-        # create empty array to store True/False
-        bool_array = np.zeros(len(filelist), dtype = bool)
-        
-        # convert all files
-        for i in tqdm(range(len(filelist)), desc = 'Progress', file=sys.stdout):
+        try:
             
-            # convert edf to csv
-            bool_array[i] = func(filelist[i])
+            # get file list
+            filelist = list(filter(lambda k: '.edf' in k, os.listdir(self.main_path)))
             
-        return bool_array
+            # convert all files
+            for i in tqdm(range(len(filelist)), desc = 'Progress', file=sys.stdout):
+                
+                # convert edf to csv
+                func(filelist[i])
+                
+            return False
+        
+        except Exception as err:
+            
+            print('\n -> Error! File:', filelist[i], 'could not be read.\n')
+            print(err,'\n')
+            
+            return True
+
                 
     
 if __name__ == '__main__':
@@ -262,7 +252,7 @@ if __name__ == '__main__':
         sys.exit()
     
     # add main path to properties dictionary
-    prop_dict.update(main_path)
+    prop_dict.update({'main_path':main_path})
     
     # init object
     obj = EdfConvert(prop_dict)
@@ -270,35 +260,31 @@ if __name__ == '__main__':
     print('\n---------------------------------------------------------------------')
     print('------------------------ Initiate Error Check -----------------------\n')
     
-    success = obj.all_files(main_path, obj.edf_check)
+    success = obj.all_files(obj.edf_check)
 
     print('\n------------------------ Error Check Finished -----------------------')
     print('---------------------------------------------------------------------\n')
     
-    if np.any(success) == False:
+    if success == False:
         print('-> File Check Completed Successfully')  
     else:
-        print('-> Warning!!! File Check was not Successful.')
+        print('--> Warning!!! File Check was not Successful.\n')
+        sys.exit()
         
     # create user options list
-    options =['csv','h5','no']
+    options =['csv','h5']
     answer = ''
     
     # Verify how to proceed
     while answer not in options:
         answer = input('Would you like to proceed with File Conversion ' + str(options) + ' ? \n')
         
-    if answer == 'no':
-        
-       print('---> No Further Action Will Be Performed.\n')
-       sys.exit()
-
-    elif answer == 'csv':
+    if answer == 'csv':
         
         print('\n--------------------------------------------------------------------------------')
         print('------------------------ Initiating edf -> csv Conversion ----------------------\n')
         
-        obj.all_files(main_path, obj.edf_to_csv)
+        obj.all_files(obj.edf_to_csv)
         
         print('\n************************* Conversion Completed *************************\n')
         
@@ -307,7 +293,7 @@ if __name__ == '__main__':
         print('\n-------------------------------------------------------------------------------')
         print('------------------------ Initiating edf -> h5 Conversion ----------------------\n')
         
-        obj.all_files(main_path, obj.edf_to_h5)
+        obj.all_files(obj.edf_to_h5)
         
         print('\n************************* Conversion Completed *************************\n')
             
