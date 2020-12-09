@@ -41,14 +41,13 @@ class EdfConvert:
         self.winsize = int(self.new_fs*self.win)                      # window size in samples
         
         
-    def _read_edf(self, main_path, file_name):
+    def _read_edf(self, file_name):
         """
         Opens edf file using pyedflib and returns a reference object.
-
+        ----------------------------------------------------------------------
 
         Parameters
         ----------
-        main_path : Str, path to file's parent directory
         file_name : Str, file name
 
         Returns
@@ -57,19 +56,18 @@ class EdfConvert:
 
         """
         
-        fread = pyedflib.EdfReader(os.path.join(main_path, file_name))
+        fread = pyedflib.EdfReader(os.path.join(self.main_path, file_name))
         
         return fread
         
         
-    def edf_check(self, main_path, file_name):
+    def edf_check(self, file_name):
         """
         Checks if an edf file can be read successfully.
-        
+        ----------------------------------------------------------------------
         
         Parameters
         ----------
-        main_path : Str, path to file's parent directory
         file_name : Str, file name
 
         Returns
@@ -83,7 +81,7 @@ class EdfConvert:
         
         try: 
             # open edf reader
-            f = self._read_edf(main_path, file_name)
+            f = self._read_edf(file_name)
             
             for i in range(len(f.getSignalHeaders())): # iterate over channels
             
@@ -108,19 +106,18 @@ class EdfConvert:
             return True
             
 
-    def edf_to_csv(self, main_path, file_name):
+    def edf_to_csv(self, file_name):
         """
-        Convert an edf file to csv file(s), csv file per channel.
+        Convert an edf to csv file(s), one csv file per channel.
         
-        csv file shape
-        -------------------
+        csv file shape:
         rows = nSamples/columns
         columns = win * new_fs
         Where 'nSamples' is the number of samples in one channel of the edf file.
+        ----------------------------------------------------------------------
         
         Parameters
         ----------
-        main_path : Str, path to file's parent directory
         file_name : Str, file name
 
         Returns
@@ -130,7 +127,7 @@ class EdfConvert:
         """
         
         # open edf reader
-        f = self._read_edf(main_path, file_name)
+        f = self._read_edf(file_name)
         
         for i in range(len(f.getSignalHeaders())): # iterate over channels
             
@@ -149,7 +146,7 @@ class EdfConvert:
             data = np.reshape(data, (-1, self.winsize))
             
             # save to csv
-            np.savetxt(os.path.join(main_path, save_name + '.csv'), data, delimiter =',')
+            np.savetxt(os.path.join(self.main_path, save_name + '.csv'), data, delimiter =',')
             
         # delete file read
         del f
@@ -157,20 +154,19 @@ class EdfConvert:
         return False
     
     
-    def edf_to_h5(self, main_path, file_name):
+    def edf_to_h5(self, file_name):
         """
-        Convert an edf file to h5 file.
+        Convert edf to h5 file.
         
-        h5 file shape
-        -------------------
+        h5 file shape:
         1st-dimension, X = nSamples/Y
         2nd-dimension, Y = win * new_fs
         3rd-dimension, Z = number of channels
         Where 'nSamples' is the number of samples in one channel of the edf file.
+        ----------------------------------------------------------------------
         
         Parameters
         ----------
-        main_path : Str, path to file's parent directory
         file_name : Str, file name
 
         Returns
@@ -180,14 +176,14 @@ class EdfConvert:
         """
         
         # open edf reader
-        f = self._read_edf(main_path, file_name)
+        f = self._read_edf(file_name)
         
         # get rows and chanels
         rows = int(f.getNSamples()[0]/self.down_factor/self.winsize)
         channels = len(f.getSignalHeaders())
         
         # open tables object for saving
-        fsave = tables.open_file(os.path.join(main_path, file_name.replace('.edf','.h5')), mode='w') 
+        fsave = tables.open_file(os.path.join(self.main_path, file_name.replace('.edf','.h5')), mode='w') 
         atom = tables.Float64Atom() # declare data type     
         ds = fsave.create_earray(fsave.root, 'data', atom, # create data store 
                                     shape = [rows, self.winsize, 0])
@@ -221,8 +217,10 @@ class EdfConvert:
         
         
                 
-    def all_files(self, main_path, func):
+    def all_files(self, func):
         """
+        Run func opeartion on all edf files in self.main_path.
+        ----------------------------------------------------------------------
 
         Parameters
         ----------
@@ -236,7 +234,7 @@ class EdfConvert:
         """
         
         # get file list
-        filelist = list(filter(lambda k: '.edf' in k, os.listdir(main_path)))
+        filelist = list(filter(lambda k: '.edf' in k, os.listdir(self.main_path)))
         
         # create empty array to store True/False
         bool_array = np.zeros(len(filelist), dtype = bool)
@@ -245,7 +243,7 @@ class EdfConvert:
         for i in tqdm(range(len(filelist)), desc = 'Progress', file=sys.stdout):
             
             # convert edf to csv
-            bool_array[i] = func(main_path, filelist[i])
+            bool_array[i] = func(filelist[i])
             
         return bool_array
                 
@@ -262,6 +260,9 @@ if __name__ == '__main__':
     if os.path.isdir(main_path) == 0:
         print('-> Path:', "'" + main_path + "'", 'is not valid.\n Please enter a valid path.')
         sys.exit()
+    
+    # add main path to properties dictionary
+    prop_dict.update(main_path)
     
     # init object
     obj = EdfConvert(prop_dict)

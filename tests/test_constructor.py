@@ -8,7 +8,7 @@ Created on Fri Dec  4 10:55:13 2020
 ### ----------------------- Imports ---------------------- ###
 import json
 import pytest
-from edf_convert_main import edfConvert
+from edf_convert_main import EdfConvert
 ### ------------------------------------------------------ ###
 
 ### ----------------------- Fixtures ---------------------- ###
@@ -28,7 +28,7 @@ def prop_dict(config_file_path):
 def edfobj(prop_dict):
     
     # init object
-    obj = edfConvert(prop_dict)
+    obj = EdfConvert(prop_dict)
     return obj
 
 
@@ -36,7 +36,7 @@ def edfobj(prop_dict):
 def edfobj_fixed_params(prop_dict):
     
     # get object
-    obj = edfConvert(prop_dict)
+    obj = EdfConvert(prop_dict)
     
     # pass fixed values
     obj.fs = 2000

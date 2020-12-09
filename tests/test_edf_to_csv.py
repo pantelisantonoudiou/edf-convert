@@ -13,7 +13,7 @@ import json
 import pytest
 import pyedflib
 from scipy import signal
-from edf_convert_main import edfConvert
+from edf_convert_main import EdfConvert
 ### ------------------------------------------------------- ###
 
 
@@ -43,11 +43,14 @@ def prop_dict(config_file_path):
     prop_dict = json.loads(openpath)
     return prop_dict
 
-@pytest.fixture # get edfConvert object
+@pytest.fixture # get EdfConvert object
 def edf_obj(prop_dict, edf_dir_path, edf_file_name):
     
+    # add main path to dict
+    prop_dict.update({'main_path': edf_dir_path})
+    
     # init object
-    obj = edfConvert(prop_dict)
+    obj = EdfConvert(prop_dict)
     return obj
 
 @pytest.fixture # get decimated data from channel 'chnl'
@@ -81,7 +84,7 @@ def channels(edf_dir_path, edf_file_name):
 # convert edf data to csv
 def test_convert_data_to_csv(edf_obj, edf_dir_path, edf_file_name):
     # convert data
-    edf_obj.edf_to_csv(edf_dir_path, edf_file_name)
+    edf_obj.edf_to_csv(edf_file_name)
     
     assert 1 == 1 
 
