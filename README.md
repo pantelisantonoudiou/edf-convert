@@ -30,7 +30,7 @@ For **h5**:
 ## How to use
 Simply execute and follow script instructions
 
-    python edf_convert.py
+    python edf_convert_main.py
 
 ---
 ### :snake: Dependencies
